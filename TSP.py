@@ -3,6 +3,7 @@ from Chromosome import Chromosome
 import random
 from Selection import Selection
 from Mate import Mate
+from copy import deepcopy
 
 cost_requirement = 6400
 
@@ -66,18 +67,19 @@ def runGA(tsp, selections, lowest_cost_child, children_list, cost, generation):
 
     mating = Mate(tsp.get_matrix())
     mating.set_parent_chromosomes(pair_list)
-    mating.single_point_crossover()
+    #mating.single_point_crossover()
+    mating.double_point_crossover()
 
     children_list = mating.get_children_chromosomes()
 
+    print("     ", cost, "      ", generation)
     for child in children_list:
         if child.get_fitness() < cost:
             cost = child.get_fitness()
-            lowest_cost_child = child
+            lowest_cost_child = deepcopy(child)
 
     child_path = lowest_cost_child.get_path()
-    for node in child_path:
-        print(node)
+    #print(child_path)
     print("     ", cost, "      ", generation)
 
 
@@ -97,38 +99,36 @@ def main():
     generation = 0
 
     cost = 10000
-    while cost >= 6400:
-        runGA(tsp, selections, lowest_cost_child, children_list, cost, generation)
-        generation += 1
-        # selections.set_chromosome_list(children_list)
-        #
-        # selections.top_down_pair()
-        #
-        # pair_list = selections.get_pair_list()
-        #
-        # mating = Mate(tsp.get_matrix())
-        # mating.set_parent_chromosomes(pair_list)
-        # mating.single_point_crossover()
-        #
-        # children_list = mating.get_children_chromosomes()
-        #
-        # for child in children_list:
-        #     if child.get_fitness() < cost:
-        #         cost = child.get_fitness()
-        #         lowest_cost_child = child
-        #
-        # child_path = lowest_cost_child.get_path()
-        # for node in child_path:
-        #     print(node)
-        # print("     ", cost, "      ", generation)
-        #
-        # generation += 1
+    while cost > 6400:
+        #runGA(tsp, selections, lowest_cost_child, children_list, cost, generation)
+        #generation += 1
+        selections.set_chromosome_list(children_list)
 
-    print("Number of generations: ", generation, " Circuit produced: ")
+        selections.tournament_pair()
+
+        pair_list = selections.get_pair_list()
+
+        mating = Mate(tsp.get_matrix())
+        mating.set_parent_chromosomes(pair_list)
+        mating.single_point_crossover()
+
+        children_list = mating.get_children_chromosomes()
+
+        for child in children_list:
+            if child.get_fitness() < cost:
+                cost = child.get_fitness()
+                lowest_cost_child = deepcopy(child)
+
+        child_path = lowest_cost_child.get_path()
+        # print(child_path)
+        print("     ", cost, "      ", generation)
+
+        generation += 1
+
+    print("Number of generations:   ", generation)
     child_path = lowest_cost_child.get_path()
-    for node in child_path:
-        print(node)
-    print("     Cost of circuit: ", cost)
+    print("Circuit produced:        ", child_path)
+    print("Cost of circuit:         ", cost)
 
 
 main()

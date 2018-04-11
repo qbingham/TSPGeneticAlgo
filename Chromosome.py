@@ -12,7 +12,7 @@ class Chromosome:
         return self.path
 
     def set_fitness(self, matrix):
-        for i in range(0, 10):
+        for i in range(0, 8):
             self.fitness += matrix[self.path[i%8]][self.path[(i+1)%8]]
 
     def get_fitness(self):

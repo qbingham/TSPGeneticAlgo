@@ -5,7 +5,7 @@ class Selection:
     def __init__(self):
         self.chromosome_list = []
         self.pair_list = []
-        self.index_list = range(0, 64)
+
 
     def set_chromosome_list(self, list_to_set):
         self.chromosome_list = list_to_set
@@ -16,9 +16,10 @@ class Selection:
             self.pair_list.append(temp)
 
     def tournament_pair(self):
+        index_list = list(range(0, 64))
         for i in range(0, 64, 2):
-            temp = (self.chromosome_list[self.index_list.pop(random.randint(0, 64))],
-                    self.chromosome_list[self.index_list.pop(random.randint(0, 64))])
+            temp = (self.chromosome_list[index_list.pop(random.randint(0, 63-i))],
+                    self.chromosome_list[index_list.pop(random.randint(0, 63-i-1))])
             self.pair_list.append(temp)
 
     def get_pair_list(self):
